@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "nbody",
+"productVersion": "0.1",
+"dataUrl": "solar-system.data.unityweb",
+"wasmCodeUrl": "solar-system.wasm.code.unityweb",
+"wasmFrameworkUrl": "solar-system.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#000000",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.17f1"
+}

@@ -1,0 +1,493 @@
+/* critical css */
+
+* {
+		text-rendering: optimizeLegibility;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		font-kerning: auto;
+}
+
+html {
+		font-family: sans-serif;
+		font-size: 16px; // default size
+		height: 100%; 
+		width: 99%; 	
+}
+
+/* color and font tags */
+
+$sans-font: "Lato", "Gill Sans", "Gill Sans MT", Calibri, sans-serif; 
+$code-font: Consolas, "Liberation Mono", Menlo, Courier, monospace; 
+$bg-color: #ffffff; 
+$text-color: #2c4444;
+$contrast-color: #b0409d; 
+
+/* load et-book fonts */ 
+
+@font-face {
+    font-family: "et-book";
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot");
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix") format("embedded-opentype"), url("{{ site.baseurl }}/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff"), url("{{ site.baseurl }}/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf") format("truetype"), url("{{ site.baseurl }}/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg#etbookromanosf") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "et-book";
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot");
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot?#iefix") format("embedded-opentype"), url("{{ site.baseurl }}/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff"), url("{{ site.baseurl }}/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf") format("truetype"), url("{{ site.baseurl }}/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg#etbookromanosf") format("svg");
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "et-book";
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot");
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot?#iefix") format("embedded-opentype"), url("{{ site.baseurl }}/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff"), url("{{ site.baseurl }}/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf") format("truetype"), url("{{ site.baseurl }}/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg#etbookromanosf") format("svg");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "et-book-roman-old-style";
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot");
+    src: url("{{ site.baseurl }}/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot?#iefix") format("embedded-opentype"), url("{{ site.baseurl }}/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.woff") format("woff"), url("{{ site.baseurl }}/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.ttf") format("truetype"), url("{{ site.baseurl }}/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.svg#etbookromanosf") format("svg");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* css parameters */ 
+
+body {
+    -webkit-font-smoothing: antialiased;
+    background: $bg-color; 
+    color: $text-color; 
+    counter-reset: sidenote-counter;
+		font-family: $sans-font; 
+    width: 70%; 
+		padding-left: 15%; 
+		padding-right: 15%; 
+		line-height: 1.45; 
+		max-width: 1200px; 
+}
+
+h1 {
+		font-weight: 400; 
+		margin-top: 1.0rem; 
+		margin-bottom: 2.0rem;
+	  font-size: 2.5rem; 
+}	
+
+h2 {
+		font-style: italic; 
+		font-weight: 400; 
+		margin-top: 4.0rem; 
+		margin-bottom: 1.2rem;
+	  font-size: 1.5rem; 
+}	
+
+h3 {
+		font-weight: 50; 
+	  font-size: 1.2rem; 
+}	
+
+p {
+    position: relative;
+}
+
+p, table, blockquote, pre, img, hr, .mini-note, ul li, ol li {
+    box-sizing: border-box;
+    max-width: 65%;
+}
+
+.MathJax_SVG_Display {
+    max-width: 65% !important;
+}
+
+/*
+a,a:visited {
+    color: #111;
+
+    &:hover {
+        color: rgb(220, 40, 40);
+    }
+}
+*/ 
+
+a {
+		color: $text-color; 
+		text-decoration: underline; 
+}
+
+li ul li, li ol li {
+    max-width: 100%;
+}
+
+ul, ol {
+		webkit-padding-start: 5%; 
+		webkit-padding-end: 5%; 
+}
+
+ul.content-listing {
+		padding-top: 1.0rem; 
+		padding-bottom: 1.0rem; 
+		padding-left: 0; 
+		font-size: 1.05rem; 
+		list-style: none; 
+}
+
+.content-listing a {
+		color: $contrast-color; 
+		text-decoration: underline; 
+}
+
+li.listing {
+	  padding-bottom: 0.9rem; 
+}
+
+ul.footer-links, .credits {
+		font-size: 0.8rem; 
+		list-style: none; 
+		text-align: left; 
+		margin: 0 auto; 
+		text-decoration: none; 
+}
+
+ul.footer-links li {
+		display: inline; 
+		padding: 0.5rem 0.25rem; 
+}
+
+.credits {
+		padding: 0rem 0rem; 
+}
+
+.credits a {
+		color: $text-color; 
+		text-decoration: none; 
+}
+
+.ext-links a {
+		color: $contrast-color; 
+		text-decoration: underline; 
+}
+
+blockquote {
+    font-style: italic;
+    margin: 0;
+    padding: 2rem 0 2rem 4rem;
+}
+
+figure {
+    align-items: flex-start;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+hr {
+    background-color: $text-color;  
+    border: none; 
+    height: 0.8px;
+    width: 100%;
+    margin: 1rem 0 0.6rem 0; 
+}
+
+pre {
+    font-size: 80%;
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+code {
+		font-family: $code-font; 
+    font-size: 80%;
+}
+
+img {
+    height: auto;
+    margin-right: 4rem;
+    width: 100%;
+}
+
+/* tables */ 
+
+table {
+    border-collapse: separate;
+    border-spacing: 1.5rem .5rem;
+    margin: 0 6rem 0 -1.5rem;
+    text-align: left;
+    width: 100%;
+
+    th, td {
+        font-weight: bold;
+        padding: 0;
+
+        &:not(:first-child) {
+            text-align: right;
+        }
+    }
+
+    thead th {
+        border-bottom: 1px solid #111;
+    }
+}
+
+/* default classes */ 
+
+/*p*/.subtitle {
+    font-size: 1.8rem;
+    font-style: italic;
+}
+
+/*p*/.sans {
+    font-family: "Lato", "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    letter-spacing: .03em;
+}
+
+/*span*/.caps {
+    font-variant: small-caps;
+}
+
+/*span*/.italics {
+    font-style: italic;
+}
+
+/*span*/.marginnote,
+/*span*/.sidenote {
+    font-size: 80%;
+    left: calc(100% + 4rem);
+    line-height: 1.3rem;
+    max-width: 400px;
+    padding-top: 1rem;
+    position: absolute;
+    top: 0;
+    width: 50%;
+}
+
+/*span*/.sidenote {
+    &:before {
+        content: counter(sidenote-counter) " ";
+        font-family: et-book-roman-old-style;
+        position: relative;
+        top: -0.5rem;
+        vertical-align: baseline;
+    }
+}
+
+/*span*/.sidenote-number {
+    counter-increment: sidenote-counter;
+
+    &:after {
+        content: counter(sidenote-counter);
+        font-family: et-book-roman-old-style;
+        font-size: 80%;
+        left: 0.1rem;
+        position: relative;
+        top: -0.5rem;
+        vertical-align: baseline;
+    }
+}
+
+figure {
+    /*span*/.marginnote,
+    /*span*/.sidenote {
+        left: auto;
+        position: relative;
+    }
+}
+
+/*span*/.mini-note {
+    display: block;
+    font-size: 80%;
+    font-style: italic;
+}
+
+/*div*/.epigraph {
+    margin: 4rem 0;
+
+    blockquote {
+        font-style: italic;
+        margin: 2rem 0;
+
+    }
+}
+
+/* page container for footer */ 
+
+footer {
+    display: block;
+    margin: 2em 0 1em 0;
+    font-size: 14.4px;
+    text-align: center;
+}
+
+footer a {
+    white-space: normal;
+}
+
+footer span {
+    white-space: nowrap;
+}
+
+#page-container {
+		position: relative; 
+		min-height: 92vh;
+}
+
+#content-wrap {
+		padding-bottom: 6.0rem; 
+}
+
+#footer {
+		position: absolute; 
+		bottom: 0; 
+		width: 100%; 
+		height: 6.0rem; 
+}
+
+/* dynamic resizing based on viewport width */ 
+
+// @media screen and (min-width: 1200px){ html{ font-size: 16px;} }
+
+@media(max-width: 1400px) {
+
+    body {
+				width: 80%; 
+				padding-left: 10%; 
+				padding-right: 10%; 
+    }
+
+    p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li {
+        max-width: 65%;
+    }
+
+    .MathJax_SVG_Display {
+        max-width: 65% !important;
+    }
+}
+
+@media(max-width: 1100px) {
+
+    body {
+				width: 90%; 
+				padding-left: 5%; 
+				padding-right: 5%; 
+    }
+
+    p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li {
+        max-width: 65%;
+    }
+
+    .MathJax_SVG_Display {
+        max-width: 65% !important;
+    }
+}
+
+@media(max-width: 1000px) {
+
+    body {
+        padding-left: 5%; 
+			  padding-right: 5%; 	
+    }
+
+    p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li {
+        max-width: 600px; 
+    }
+
+    .MathJax_SVG_Display {
+        max-width: 100% !important;
+    }
+
+    figure {
+        flex-direction: column;
+    }
+
+    /*span*/.marginnote,
+    /*span*/.sidenote {
+        display: block;
+        left: auto;
+        margin-top: 1rem;
+        position: relative;
+        top: auto;
+        width: 100%;
+    }
+}
+
+/* icomoon font icons */
+
+@font-face {
+  font-family: 'icomoon';
+  src:url('{{ site.baseurl }}/fonts/icomoon/icomoon.eot?rgwlb8');
+  src:url('{{ site.baseurl }}/fonts/icomoon/icomoon.eot?#iefixrgwlb8') format('embedded-opentype'),
+    url('{{ site.baseurl }}/fonts/icomoon/icomoon.woff?rgwlb8') format('woff'),
+    url('{{ site.baseurl }}/fonts/icomoon/icomoon.ttf?rgwlb8') format('truetype'),
+    url('{{ site.baseurl }}/fonts/icomoon/icomoon.svg?rgwlb8#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'icomoon';
+  speak: none;
+  font-weight: normal;
+	font-size: 0.7rem; 
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  color: $contrast-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-pencil:before {
+  content: "\e600";
+}
+.icon-film:before {
+  content: "\e60f";
+}
+.icon-calendar:before {
+  content: "\e601";
+}
+.icon-link:before {
+  content: "\e602";
+}
+.icon-info:before {
+  content: "\e603";
+}
+.icon-cancel-circle:before {
+  content: "\e604";
+}
+.icon-checkmark-circle:before {
+  content: "\e605";
+}
+.icon-spam:before {
+  content: "\e606";
+}
+.icon-mail:before {
+  content: "\e607";
+}
+.icon-googleplus:before {
+  content: "\e608";
+}
+.icon-twitter:before {
+  content: "\e60a";
+}
+.icon-feed:before {
+  content: "\e60b";
+}
+.icon-flickr:before {
+  content: "\e60c";
+}
+.icon-github:before {
+  content: "\e60d";
+}
+.icon-box-add:before {
+  content: "\e60e";
+}

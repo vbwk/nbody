@@ -1,0 +1,301 @@
+---
+title: 'intro: <i>n</i>-body dynamics'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background','italics']
+    css: 'tufte.css'
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gridExtra)
+library(extraDistr)
+library(plotly)
+library(latex2exp)
+library(reticulate)
+library(tufte)
+```
+
+\renewcommand{\v}[1]{{\boldsymbol #1}}
+\renewcommand{\dv}[1]{\dot{\boldsymbol{#1}}}
+\newcommand{\ddv}[1]{\ddot{\boldsymbol{#1}}}
+\newcommand{\hv}[1]{\hat{\boldsymbol{#1}}}
+\newcommand{\m}[1]{[ #1 ]}
+\renewcommand{\t}[1]{\widetilde{\boldsymbol{#1}}}
+\newcommand{\bfit}[1]{\textbf{\textit{#1}}}
+
+\renewcommand{\d}{\text{d}}
+\renewcommand{\dd}[2]{\frac{\d #1}{\d #2}}
+\newcommand{\ddd}[2]{\frac{\d^2 #1}{\d #2^2}}
+\newcommand{\ddt}[1]{\frac{\d #1}{\d t}}
+\newcommand{\dddt}[1]{\frac{\d^2 #1}{\d t^2}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\renewcommand{\grad}{\boldsymbol \nabla} 
+\renewcommand{\div}{\boldsymbol \nabla \cdot}
+\renewcommand{\curl}{\boldsymbol \nabla \times}
+\newcommand{\lap}{\nabla^2}
+\newcommand{\intinf}{\int_{-\infty}^\infty}
+\newcommand{\intzinf}{\int_0^\infty}
+\newcommand{\intinfz}{\int_{-\infty}^0}
+
+\newcommand{\eo}{\epsilon_0}
+\newcommand{\muo}{\mu_0}
+
+The aim of the $n$-body problem is to predict the motion of a group of bodies bound by a central potential. The problem arises most often in a gravitational context, when studying the behaviour of planetary or stellar systems. Each body is subject to the force 
+
+$$\v F_i = \sum_{i,i \neq j}^n \frac{G m_i m_j}{r_{ij}^2} \hv r_{ij}$$
+
+which describes its gravitational interaction with every other body in the system (Newton's law of universal gravitation).  
+
+The biggest challenge in solving the problem is dynamical complexity. As more bodies are included in a system, the large number of gravitational interactions tends to make the motion extremely sensitive to initial conditions. As a result most $n$-body gravitational systems are dynamically unstable and have a high propensity to undergo chaotic motion. The only exception is the restricted case when $n=2$ (the two-body problem) which is the only case with stable behaviour for all configurations. For this reason only the two-body problem has been solved completely. For systems with $n \geq 3$ there is no general analytic solution to the problem, and the motion must generally be approximated using numerical methods (simulation).  
+
+\ 
+
+## planetary orbits 
+
+Kepler was the first to properly understand the geometry of planetary orbits, reified in his three laws of planetary motion:
+
+- planets move in elliptical orbits, with the Sun at one of the two foci
+- a line joining the planet to the Sun sweeps out equal areas in equal amounts of time
+- the orbital period, $\tau$, is related to the semimajor axis of the ellipse, $a$, via the relation $\tau^2 \propto a^3$
+
+These laws are purely empirical, not physical, and describe a geometric model for planetary motion based on Kepler's observations of planets orbiting the Sun. 
+
+`kepler-laws.gif`
+
+At the time (1619) this model was the best fit for the empirical data. The first law gave a consistent geometry for all the observed planets; the second law described Kepler's observation that planets seemed to get faster as they approached the Sun, and vice versa; and the third law related the orbit of one planet to another. 
+
+The modern analytic approach to understanding planetary motion was devised by Newton, with the introduction of the laws of motion and universal gravitation. Newton's formulation in fact mostly validated Kepler's geometric model, with the caveat that Newton's third law (equal/opposite forces) required that the gravitational pull of the planet must also cause the Sun to move. In reality both the planet and the Sun are in fact orbiting aroud their mutual barycentre (centre of mass), but the Sun is so heavy that the motion imparted to it by any planet is essentially negligible to a first approximation. This approximation is only valid if one mass is much heavier than the other (as is often the case in the solar system); if the two bodies have similar mass the barycentric motion is more apparent: 
+
+`kepler-equalmasses.gif`
+
+\ 
+
+## the two-body problem
+
+The following sections will briefly go through the analytic solution to the motion of a two-body gravitational system. 
+
+Set up the problem in a fixed reference frame where $\v r_1$ and $\v r_2$ denote the positions of each body, and $m_1$ and $m_2$ their masses: 
+
+
+```{r, echo=F, warning=F, fig.width=4.5, fig.height=3.5, fig.align="center"}
+m1 = 7; m2 = 3;
+
+ggplot() +
+  
+  # points
+  geom_point(aes(x = 1, y = 3), size = m1) + # r1
+  geom_point(aes(x = 3, y = 4), size = m2) + # r2
+  geom_point(aes(x = (m1*1+m2*3)/(m1+m2), y = (m1*3+m2*4)/(m1+m2)), size = 4, shape = 4) + # CoM
+  xlim(0.5,3.5) + ylim(-1,5) +
+
+  # lines
+  geom_segment(aes(x = 2, xend = 1, y = 0, yend = 3),
+               color = "black", linetype = "solid", size = 0.4) + # r1
+  geom_segment(aes(x = 2, xend = 3, y = 0, yend = 4),
+               color = "black", linetype = "solid", size = 0.4) + # r2
+  geom_segment(aes(x = 1, xend = 3, y = 3, yend = 4),
+               color = "black", linetype = "solid", size = 0.2) + # r
+  geom_segment(aes(x = 2, xend = (m1*1+m2*3)/(m1+m2), y = 0, yend = (m1*3+m2*4)/(m1+m2)),
+               color = "black", linetype = "solid", size = 0.4) + # R
+  
+  # text										   
+  geom_text(label = TeX("$m_1$"), aes(x = 0.75, y = 3)) +
+  geom_text(label = TeX("$m_2$"), aes(x = 3.2, y = 4)) +
+  geom_text(label = "CoM", aes(x = (m1*1+m2*3)/(m1+m2), y = (m1*3+m2*4)/(m1+m2) + 0.3)) +
+  geom_text(label = TeX("$\\textbf{r}_1$"), aes(x = 1.3, y = 1.6)) + # r1
+  geom_text(label = TeX("$\\textbf{r}_2$"), aes(x = 2.65, y = 2)) + # r2
+  geom_text(label = TeX("$\\textbf{R}$"), aes(x = 1.90, y = 1.8)) + # R
+  geom_text(label = TeX("$\\textbf{r}}$"), aes(x = 2, y = 3.7)) + # r
+  geom_text(label = "O", aes(x = 2, y = -0.3)) + # O
+ 
+  # theme 
+  theme_void() +
+  theme(panel.background = element_rect(fill = '#f3dbda', colour = '#f3dbda'))
+```
+
+Note also the following quantities:
+
+- the system's centre of mass position : $\v R = \frac{m_1 \v r_1 + m_2 \v r_2}{m_1 + m_2}$
+
+- the relative position: $\v r = \v r_2 - \v r_1$
+
+- the total mass: $M = m_1 + m_2$
+
+Each body exerts a force on the other given by Newton's law of gravitation. The two equations of motion in this reference frame are:
+
+$$\v F_{1} = m_1 \ddv r_1 = \frac{Gm_1 m_2}{r^3}(\v r_2 - \v r_1) \tag{1}$$ 
+$$\v F_{2} = m_2 \ddv r_2 = \frac{Gm_1 m_2}{r^3}(\v r_1 - \v r_2) \tag{2}$$
+
+These are a set of coupled nonlinear differential equations. The goal of the problem is to solve these equations for $\v r_1(t)$ and $\v r_2(t)$, which will give the trajectories of the two bodies for all time.
+
+Solving the problem analytically requires uncoupling the equations of motion. This can be done by choosing a set of independent coordinates in which to recast the equations (currently the equations are cast in terms of the generic position coordinates, $\v r_1$ and $\v r_2$, which are not independent, resulting in coupled equations). It turns out that in many closed $n$-body systems, the best choice of coordinates is the centre of mass position $\v R$ and the relative position $\v r$, as they simplify the mathematical formalism while still capturing the dynamics of the system (for this reason they are known as Jacobi coordinates).  
+
+The transformations from the base coordinates to the Jacobi coordinates are as follows:
+
+$$\v r_1 = \v R + \frac{m_2}{M} \v r \hspace{2cm} \v r_2 = \v R - \frac{m_1}{M} \v r$$
+
+Substitute these into the original equations of motion:
+
+$$m_1 \big( \ddv R + \tfrac{m_2}{M} \ddv r \big) = \frac{G m_1 m_2}{r^3} \bigg[ \big( \v R - \tfrac{m_1}{M} \v r \big) - \big( \v R + \tfrac{m_2}{M} \v r \big) \bigg] \tag{3}$$
+
+$$m_2 \big( \ddv R - \tfrac{m_1}{M} \ddv r \big) = \frac{G m_1 m_2}{r^3} \bigg[ \big( \v R + \tfrac{m_2}{M} \v r \big) - \big( \v R - \tfrac{m_1}{M} \v r \big) \bigg] \tag{4}$$
+
+Adding and subtracting equations (3) and (4) give the following two equations:
+
+$$
+\begin{align}
+	M \ddv R &= 0 \tag{5} \\ 
+	\\ 
+	\mu \ddv r &= \frac{GM}{r^2} \tag{6}
+\end{align}
+$$
+
+Equation (5) is an equation of motion for the centre of mass. That it equals zero means the centre of mass behaves like a free particle and does not accelerate. 
+
+Equation (6) is an equation of motion for the relative position. It has the form of Newton's law of gravitation, but for a body of mass $\mu$, which is a new quantity known as the _reduced mass:_ 
+
+$$\mu = \frac{m_1 m_2}{m_1 + m_2}$$
+
+Equations (5) and (6) are uncoupled. The problem can now be solved as two independent one-body systems, one describing the motion of the centre of mass and the other describing the motion of the relative position. Moreover, since the centre of mass motion is trivial (it travels with constant velocity), it can be solved for all time from just the initial conditions. All that remains is to solve the equation for the relative position. The solutions for $\v R(t)$ and $\v r(t)$ can be easily substituted back into the original coordinates $\v r_1$ and $\v r_2$ to give the trajectories of the two bodies.  
+
+\ 
+
+## the equivalent one-body problem 
+
+Since the centre of mass does not accelerate, the problem can be simplified even further by defining an inertial reference frame in which the centre of mass is the origin ($\v R = 0$), as follows: 
+
+`com-frame.png`
+
+We can also define the centre of mass to be fixed ($\dv R = 0$) without changing the character of the problem. In this reference frame, known as the "CoM frame", the only motion in the system is that of the relative vector $\v r$, and only equation (6) must be solved. This is now a one-body central force problem, in which a body of mass $\mu$ orbits around a stationary mass $M$ via a single central force: 
+
+`one-body-problem.png`
+
+This simplification is particularly useful when modelling a two-body system where one mass is much larger than the other (e.g. a Sun/planet or planet/satellite system). In these contexts we're mostly interested in the motion of the small mass since the large mass is "essentially" fixed. The CoM frame takes advantage of this, since if $m_1 \gg m_2$, then $m_1 \simeq M$ and $\mu \simeq m_2$, and the motion of the relative vector becomes approximately equal to that of the small mass: 
+
+`one-body-approximation.png`
+
+In other words, when one mass is much larger than the other, the solution for $\v r(t)$ will by itself give the orbit of $m_2$ to a decent approximation, and the centre of mass motion can be ignored.  
+
+The takeaway is that any two-body problem with masses $m_1$ and $m_2$ can be recast as an equivalent one-body problem where a body of reduced mass $\mu$ orbits around a fixed body of mass $M$. This equivalence is purely mathematical, not physical, as in reality the two bodies orbit around their mutual barycentre. The physical approximation is valid only when $m_1 \gg m_2$. It just so happens that many celestial two-body systems satisfy this condition (they often consist of a small mass orbiting a mostly fixed large mass---hence why Newton's laws tended to validate Kepler's geometric model).  
+
+\ 
+
+## derivation using lagrangian mechanics
+
+The two uncoupled equations of motion (5) and (6) can also be derived using Lagrangian mechanics. The Lagrangian formalism is in many ways more useful than the elimination method (above) as it allows for direct considerations of the system's energy and related properties.  
+
+The Lagrangian of a conservative system is $\mathcal L = T-U$. In the original coordinates $\v r_1$ and $\v r_2$, the kinetic and potential energies of the system are:
+
+$$T = \tfrac 12 m_1 \dv r_1^2 + \tfrac 12 m_2 \dv r_2^2$$
+
+$$U = -\frac{G m_1 m_2}{r}$$
+
+which makes the Lagrangian of the system:
+
+$$\mathcal L = \tfrac 12 m_1 \dv r_1^2 + \tfrac 12 m_2 \dv r_2^2 + \frac{G m_1 m_2}{r}$$
+
+Of course, to get uncoupled equations of motion the Lagrangian must be cast in terms of a suitable set of independent generalised coordinates. As before, use the Jacobi coordinates $\v R$ and $\v r$, in terms of which the kinetic energy is:
+
+$$T = \tfrac 12 M \dv R^2 + \tfrac 12 \mu \dv r^2$$
+
+and the Lagrangian:
+
+$$\mathcal L = \frac 12 M \dv R^2 + \frac 12 \mu \dv r^2 + \frac{G m_1 m_2}{r}$$
+
+The two Euler-Lagrange equations of motion are:
+
+$$\pd{\mathcal L}{\v R} = \ddt{} \pd{\mathcal L}{\dv R}$$
+
+$$\Longrightarrow M \ddv R = 0 \tag{9}$$
+
+\ 
+
+$$\pd{\mathcal L}{\v r} = \ddt{} \pd{\mathcal L}{\dv r}$$
+
+$$\Longrightarrow \mu \ddv r = -\frac{GM}{r^2} \tag{10}$$
+
+Equations (9) and (10) are the same uncoupled equations of motion as derived using the elimination method above.  
+
+Since equation (9) equals zero, the Lagrangian is independent of the coordinate $\v R$, and $\v R$ is said to be an _ignorable coordinate_ (a result of momentum conservation). As before, define the inertial CoM reference frame where $\dv R = 0$, and the first term can be dropped from the Lagrangian, leaving only: 
+
+$$\mathcal L = \frac 12 \mu \dv r^2 + \frac{G m_1 m_2}{r}$$
+
+As before, the problem has successfully been reduced to a one-body equivalent problem in which a body of mass $\mu$ orbits around a fixed body of mass $M$.   
+
+\ 
+
+## momentum conservation 
+
+In the original reference frame, the total angular momentum is:
+
+$$
+\begin{aligned}
+	\v L &= \v r_1 \times \v p_1 + \v r_2 \times \v p_2 \\ 
+	&= m_1 \v r_1 \times \dv r_1 + m_2 \v r_2 \times \dv r_2
+\end{aligned}
+$$
+
+In the CoM frame, where $\v R = 0$ and $\dv R = 0$, the transformations from the base coordinates to the Jacobi coordinates is:
+
+$$\v r_1 = \tfrac{m_2}{M} \v r \hspace{2cm} \v r_2 = -\tfrac{m_1}{M} \v r$$
+
+Thus the total angular momentum in the CoM frame is:
+
+$$
+\begin{aligned}
+	\v L &= \tfrac{m_1 m_2}{M} \v r \times \tfrac{m_2}{M} \dv r - \tfrac{m_1 m_2}{M} \v r \times -\tfrac{m_1}{M} \dv r \\ 
+	&= \tfrac{m_1 m_2}{M^2} \big( m_2 \v r \times \dv r + m_1 \v r \times \dv r \big) \\ 
+	&= \v r \times \mu \dv r
+\end{aligned}
+$$
+
+Thus in the CoM frame, the total angular momentum is the same as that for a particle of mass $\mu$ and position $\v r$. Moreover, since total angular momentum is conserved, the quantity $\v r \times dv r$ must also be constant, which means the two vectors $\v r$ and $\dv r$ must remain in a fixed plane. The problem is thus a two-dimensional problem. 
+
+\ 
+
+## the orbit equation 
+
+The next step is solving the equation of motion $\mu \ddv r = -\grad U(\v r)$. The Lagrangian of the system is:
+
+$$\mathcal L = \tfrac 12 \mu \dv r^2 - U(r)$$
+
+Since this is a two-dimensional problem, this is really two equations, one for each position coordinate in 2D space. Since the motion is orbital, it's easiest to use 2D polar coordinates, $\v r = \v r(r, \phi)$, to solve the problem:
+
+$$\mathcal L = \tfrac 12 \mu (r^2 + r^2 \phi^2) - U(r)$$
+
+`...`
+
+
+\ 
+
+## orbital period 
+
+The orbital period is:
+
+$$\tau = \sqrt{\frac{4 \pi^2 a^3 \mu}{G m_1 m_2}}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\ 
+
+\ 

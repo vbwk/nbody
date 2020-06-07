@@ -1,0 +1,80 @@
+<p>Kepler was the first to properly understand the geometry of planetary orbits, reified in his three laws of planetary motion:</p>
+
+<ul>
+  <li>I. planets move in elliptical orbits, with the Sun at one of the two foci</li>
+  <li>II. a line joining the planet to the Sun sweeps out equal areas in equal amounts of time</li>
+  <li>III. the orbital period, $\tau$, is related to the semimajor axis of the ellipse, $a$, via the relation $\tau^2 \propto a^3$</li>
+</ul>
+
+<p>The laws can be visualised as follows:</p>
+
+<p><code class="highlighter-rouge">kepler-laws.gif</code></p>
+
+<p>At the time (1619) this model of planetary motion was the best fit for the data. The first law gave a consistent geometry for all the observed planets; the second law accounted for Kepler’s observation that planets seemed to get faster as they approached the Sun, and vice versa; and the third law related the orbit of one planet to another. But these laws were purely empirical, not physical, and only gave a geometric description of the motion, not a causal one.</p>
+
+<p>The modern analytic approach to understanding planetary motion was devised by Newton, with the introduction of the laws of motion and universal gravitation (1687). This allowed the problem to be cast as a central force problem with equations of motion given by the force equation (1). Newton’s formulation in fact mostly validated Kepler’s geometric model, with the caveat that Newton’s third law (equal/opposite forces) required that the gravitational pull of a planet must also cause the Sun to move. In reality both the planet and the Sun orbit aroud their mutual barycentre (centre of mass), but the Sun is so heavy that the motion imparted to it by any planet is essentially negligible. This approximation is only valid if one mass is much heavier than the other (as is often the case in planetary orbits); if the two bodies have similar mass the barycentric motion is more apparent:</p>
+
+<p><code class="highlighter-rouge">kepler-equalmasses.gif</code></p>
+
+<h2 id="the-two-body-problem">the two-body problem</h2>
+
+<p>The two-body problem is the only instance of the <em>n</em>-body problem stable enough to be solved in full generality.</p>
+
+<p>The problem is usually set up in a fixed reference frame where $\boldsymbol r_1$ and $\boldsymbol r_2$ denote the positions of each body, and $m_1$ and $m_2$ their masses:</p>
+
+<p><code class="highlighter-rouge">two-body-setup.png</code></p>
+
+<p>Note also the following quantities:</p>
+
+<ul>
+  <li>$\cdot$ the system’s centre of mass position:</li>
+</ul>
+
+<p>\[ \boldsymbol R = \frac{m_1 \boldsymbol r_1 + m_2 \boldsymbol r_2}{m_1 + m_2} \tag{2} \]</p>
+
+<ul>
+  <li>$\cdot$ the relative position:</li>
+</ul>
+
+<p>\[ \boldsymbol r = \boldsymbol r_2 - \boldsymbol r_1 \tag{3} \]</p>
+
+<ul>
+  <li>$\cdot$ the total mass:</li>
+</ul>
+
+<p>\[ M = m_1 + m_2 \tag{4} \]</p>
+
+<p>Each body exerts a force on the other given by Newton’s law of gravitation. The two equations of motion in this reference frame are:</p>
+
+<p>\[ \boldsymbol F_{1} = m_1 \ddot{\boldsymbol r}_1 = \frac{Gm_1 m_2}{r^3}(\boldsymbol r_2 - \boldsymbol r_1) \tag{5} \]</p>
+
+<p>\[ \boldsymbol F_{2} = m_2 \ddot{\boldsymbol r}_2 = \frac{Gm_1 m_2}{r^3}(\boldsymbol r_1 - \boldsymbol r_2) \tag{6} \]</p>
+
+<p>These are a set of coupled nonlinear differential equations. The goal of the problem is to solve these equations for $\boldsymbol r_1(t)$ and $\boldsymbol r_2(t)$, which will give the trajectories of the two bodies for all time.</p>
+
+<p>Solving the problem analytically requires uncoupling the equations of motion. This can be done by choosing a set of independent coordinates in which to recast the equations (currently the equations are cast in terms of the generic position coordinates, $\boldsymbol r_1$ and $\boldsymbol r_2$, which are not independent, resulting in coupled equations). It turns out that in many conservative <em>n</em>-body systems, the best choice of coordinates is the centre of mass position $\boldsymbol R$ and the relative position $\boldsymbol r$. These coordinates still capture the essential dynamics of the system (e.g. total momentum and energy) but are dynamically independent. Using them will reduce the formalism without changing the nature of the problem (coordinates of this kind are known as Jacobi coordinates).</p>
+
+<p>The transformations from the base coordinates to the Jacobi coordinates are as follows:</p>
+
+<p>\[ \boldsymbol r_1 = \boldsymbol R + \frac{m_2}{M} \boldsymbol r \hspace{2cm} \boldsymbol r_2 = \boldsymbol R - \frac{m_1}{M} \boldsymbol r \tag{7} \]</p>
+
+<p>Substitute these into the original equations of motion:</p>
+
+<p>\[ m_1 \big( \ddot{\boldsymbol{R}} + \tfrac{m_2}{M} \ddot{\boldsymbol{r}} \big) = \frac{G m_1 m_2}{r^3} \bigg[ \big( \boldsymbol{R} - \tfrac{m_1}{M} \boldsymbol{r} \big) - \big( \boldsymbol{R} + \tfrac{m_2}{M} \boldsymbol{r} \big) \bigg] \tag{8} \]</p>
+
+<p>\[ m_2 \big( \ddot{\boldsymbol R} - \tfrac{m_1}{M} \ddot{\boldsymbol r} \big) = \frac{G m_1 m_2}{r^3} \bigg[ \big( \boldsymbol R + \tfrac{m_2}{M} \boldsymbol r \big) - \big( \boldsymbol R - \tfrac{m_1}{M} \boldsymbol r \big) \bigg] \tag{9} \]</p>
+
+<p>Adding and subtracting equations (9) and (9) give the following two equations:</p>
+
+<p>\[ M \ddot{\boldsymbol R} = 0 \tag{10} \]</p>
+
+<p>\[ \mu \ddot{\boldsymbol r} = \frac{GM}{r^2} \tag{11} \]</p>
+
+<p>Equation (10) is an equation of motion for the centre of mass. That it equals zero means the centre of mass behaves like a free particle and does not accelerate.</p>
+
+<p>Equation (11) is an equation of motion for the relative position. It has the form of Newton’s law of gravitation, but for a body of mass $\mu$, which is a new quantity known as the <em>reduced mass:</em></p>
+
+<p>\[ \mu = \frac{m_1 m_2}{m_1 + m_2} \tag{12} \]</p>
+
+<p>Equations (10) and (11) are uncoupled. The original two-body problem can now be solved as two independent one-body systems, one describing the motion of the centre of mass and the other describing the motion of the relative position. Moreover, since the centre of mass motion is trivial (it travels with constant velocity), it can be solved for all time from just the initial conditions. All that remains is to solve the equation for the relative position. The solutions for $\boldsymbol R(t)$ and $\boldsymbol r(t)$ can be easily substituted back into the original coordinates $\boldsymbol r_1$ and $\boldsymbol r_2$ to give the trajectories of the two bodies.</p>
+

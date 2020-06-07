@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "nbody",
+"productVersion": "0.1",
+"dataUrl": "solarsystem-rigelcollision.data.unityweb",
+"wasmCodeUrl": "solarsystem-rigelcollision.wasm.code.unityweb",
+"wasmFrameworkUrl": "solarsystem-rigelcollision.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#000000",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.17f1"
+}

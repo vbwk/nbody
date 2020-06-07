@@ -1,0 +1,18 @@
+baseurl: 
+title: n-body physics
+description: some approaches to solving the n-body problem
+markdown: kramdown
+
+sass:
+  sass_dir: css
+  style:    compressed
+
+permalink: pretty
+timezone: America/New_York
+future: false
+
+collections:
+  content:
+    output: true
+
+exclude: ['build', 'old', 'web-builds', 'Gemfile', 'Gemfile.lock', 'README.md']

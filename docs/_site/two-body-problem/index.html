@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>the n-body problem</title>
+    <meta name="description" content="some approaches to solving the n-body problem">
+    <link href='/feed.xml' rel='alternate' type='application/atom+xml'>
+    <link rel="canonical" href="/two-body-problem/">
+    <link rel="manifest" href="/manifest.json">
+		
+		<!-- load google fonts -->
+		<link href='//fonts.googleapis.com/css?family=Lato:400,400italic' rel='stylesheet' type='text/css'>
+
+		<!-- critical css -->
+		
+		<style>*{text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-kerning:auto}html{font-family:sans-serif;font-size:16px;height:100%;width:99%}@font-face{font-family:"et-book";src:url("/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot");src:url("/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix") format("embedded-opentype"),url("/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff"),url("/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf") format("truetype"),url("/fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg#etbookromanosf") format("svg");font-weight:normal;font-style:normal;font-display:swap}@font-face{font-family:"et-book";src:url("/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot");src:url("/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot?#iefix") format("embedded-opentype"),url("/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff"),url("/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf") format("truetype"),url("/fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg#etbookromanosf") format("svg");font-weight:normal;font-style:italic;font-display:swap}@font-face{font-family:"et-book";src:url("/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot");src:url("/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot?#iefix") format("embedded-opentype"),url("/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff"),url("/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf") format("truetype"),url("/fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg#etbookromanosf") format("svg");font-weight:bold;font-style:normal;font-display:swap}@font-face{font-family:"et-book-roman-old-style";src:url("/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot");src:url("/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot?#iefix") format("embedded-opentype"),url("/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.woff") format("woff"),url("/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.ttf") format("truetype"),url("/fonts/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.svg#etbookromanosf") format("svg");font-weight:bold;font-style:normal;font-display:swap}body{-webkit-font-smoothing:antialiased;background:#fff;color:#2c4444;counter-reset:sidenote-counter;font-family:"Lato","Gill Sans","Gill Sans MT",Calibri,sans-serif;width:70%;padding-left:15%;padding-right:15%;line-height:1.45;max-width:1200px}h1{font-weight:400;margin-top:1.0rem;margin-bottom:2.0rem;font-size:2.5rem}h2{font-style:italic;font-weight:400;margin-top:4.0rem;margin-bottom:1.2rem;font-size:1.5rem}h3{font-weight:50;font-size:1.2rem}p{position:relative}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{box-sizing:border-box;max-width:65%}.MathJax_SVG_Display{max-width:65% !important}a{color:#2c4444;text-decoration:underline}li ul li,li ol li{max-width:100%}ul,ol{webkit-padding-start:5%;webkit-padding-end:5%}ul.content-listing{padding-top:1.0rem;padding-bottom:1.0rem;padding-left:0;font-size:1.05rem;list-style:none}.content-listing a{color:#b0409d;text-decoration:underline}li.listing{padding-bottom:0.9rem}ul.footer-links,.credits{font-size:0.8rem;list-style:none;text-align:left;margin:0 auto;text-decoration:none}ul.footer-links li{display:inline;padding:0.5rem 0.25rem}.credits{padding:0rem 0rem}.credits a{color:#2c4444;text-decoration:none}.ext-links a{color:#b0409d;text-decoration:underline}blockquote{font-style:italic;margin:0;padding:2rem 0 2rem 4rem}figure{align-items:flex-start;display:flex;margin:0;padding:0;position:relative}hr{background-color:#2c4444;border:none;height:0.8px;width:100%;margin:1rem 0 0.6rem 0}pre{font-size:80%;margin:0;padding:1rem;overflow-x:auto}code{font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;font-size:80%}img{height:auto;margin-right:4rem;width:100%}table{border-collapse:separate;border-spacing:1.5rem .5rem;margin:0 6rem 0 -1.5rem;text-align:left;width:100%}table th,table td{font-weight:bold;padding:0}table th:not(:first-child),table td:not(:first-child){text-align:right}table thead th{border-bottom:1px solid #111}.subtitle{font-size:1.8rem;font-style:italic}.sans{font-family:"Lato", "Gill Sans", "Gill Sans MT", Calibri, sans-serif;letter-spacing:.03em}.caps{font-variant:small-caps}.italics{font-style:italic}.marginnote,.sidenote{font-size:80%;left:calc(100% + 4rem);line-height:1.3rem;max-width:400px;padding-top:1rem;position:absolute;top:0;width:50%}.sidenote:before{content:counter(sidenote-counter) " ";font-family:et-book-roman-old-style;position:relative;top:-0.5rem;vertical-align:baseline}.sidenote-number{counter-increment:sidenote-counter}.sidenote-number:after{content:counter(sidenote-counter);font-family:et-book-roman-old-style;font-size:80%;left:0.1rem;position:relative;top:-0.5rem;vertical-align:baseline}figure .marginnote,figure .sidenote{left:auto;position:relative}.mini-note{display:block;font-size:80%;font-style:italic}.epigraph{margin:4rem 0}.epigraph blockquote{font-style:italic;margin:2rem 0}footer{display:block;margin:2em 0 1em 0;font-size:14.4px;text-align:center}footer a{white-space:normal}footer span{white-space:nowrap}#page-container{position:relative;min-height:92vh}#content-wrap{padding-bottom:6.0rem}#footer{position:absolute;bottom:0;width:100%;height:6.0rem}@media (max-width: 1400px){body{width:80%;padding-left:10%;padding-right:10%}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{max-width:65%}.MathJax_SVG_Display{max-width:65% !important}}@media (max-width: 1100px){body{width:90%;padding-left:5%;padding-right:5%}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{max-width:65%}.MathJax_SVG_Display{max-width:65% !important}}@media (max-width: 1000px){body{padding-left:5%;padding-right:5%}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{max-width:600px}.MathJax_SVG_Display{max-width:100% !important}figure{flex-direction:column}.marginnote,.sidenote{display:block;left:auto;margin-top:1rem;position:relative;top:auto;width:100%}}@font-face{font-family:'icomoon';src:url("/fonts/icomoon/icomoon.eot?rgwlb8");src:url("/fonts/icomoon/icomoon.eot?#iefixrgwlb8") format("embedded-opentype"),url("/fonts/icomoon/icomoon.woff?rgwlb8") format("woff"),url("/fonts/icomoon/icomoon.ttf?rgwlb8") format("truetype"),url("/fonts/icomoon/icomoon.svg?rgwlb8#icomoon") format("svg");font-weight:normal;font-style:normal}[class^="icon-"],[class*=" icon-"]{font-family:'icomoon';speak:none;font-weight:normal;font-size:0.7rem;font-variant:normal;text-transform:none;line-height:1;color:#b0409d;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.icon-pencil:before{content:"\e600"}.icon-film:before{content:"\e60f"}.icon-calendar:before{content:"\e601"}.icon-link:before{content:"\e602"}.icon-info:before{content:"\e603"}.icon-cancel-circle:before{content:"\e604"}.icon-checkmark-circle:before{content:"\e605"}.icon-spam:before{content:"\e606"}.icon-mail:before{content:"\e607"}.icon-googleplus:before{content:"\e608"}.icon-twitter:before{content:"\e60a"}.icon-feed:before{content:"\e60b"}.icon-flickr:before{content:"\e60c"}.icon-github:before{content:"\e60d"}.icon-box-add:before{content:"\e60e"}
+</style>
+
+		<!-- mathjax configuration -->
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+		<script type="text/x-mathjax-config">
+					MathJax.Hub.Config({
+						TeX: {
+							Macros: {
+								v: ["\\boldsymbol{#1}", 1], 
+								dv: ["\\dot{\\boldsymbol{#1}}", 1],
+								ddv: ["\\ddot{\\boldsymbol{#1}}", 1],
+								hv: ["\\hat{\\boldsymbol{#1}}", 1],
+								d: ["\\text{d}", 0],
+								dd: ["\\frac{\\d{#1}}{\\d{#2}}", 2],
+								ddd: ["\\frac{\\d^2{#1}}{\\d{#2}^2}", 2],
+								pd: ["\\frac{\\partial{#1}}{\\partial{#2}}", 2], 
+								pdd: ["\\frac{\\partial^2{#1}}{\\partial{#2}^2}", 2], 
+								grad: ["\\boldsymbol{\\nabla}", 0], 
+								div: ["\\boldsymbol{\\nabla} \\cdot", 0], 
+								curl: ["\\boldsymbol{\\nabla} \\times", 0], 
+								eo: ["\\epsilon_0", 0], 
+								muo: ["\\mu_0", 0], 
+								Lag: ["\\mathcal{L}", 0], 
+								Ham: ["\\mathcal{H}", 0],
+							}
+						}
+					});
+		</script>
+
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				processEscapes: true
+			},
+			
+			jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
+			
+			extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js", "[Contrib]/a11y/accessibility-menu.js"],
+
+			TeX: {
+				extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "newcommand.js"],
+				equationNumbers: {
+					autoNumber: "AMS"
+				}
+			}
+
+		});
+		</script>
+</head>
+<br>
+
+<body>
+
+<div id="page-container">
+<div id="content-wrap">
+
+<main>
+
+<h1>the n-body problem</h1>
+
+<p>The aim of the <em>n</em>-body problem is to predict the motion of a system of bodies bound by a central potential field. In these situations all the interaction forces between the bodies are directly derivable from the potential, and depend only on the positions of the bodies. Common examples are the gravitational <em>n</em>-body problem, where bodies interact via the attractive gravitational force</p>
+
+<p>\[
+\v F_{ij} = \frac{ G m_i m_j }{ r_{ij}^2 } \hv r_{ij}
+\]</p>
+
+<p>or the electrodynamics problem where particles interact via the electrostatic force</p>
+
+<p>\[
+\v F_{ij} = \frac{ 1 }{ 4 \pi \eo } \frac{ q_i q_j }{ r_{ij}^2 } \hv r_{ij} 
+\]</p>
+
+<p>The general procedure in solving the problem involves adding up all the interaction forces for each body and integrating its equations of motion. Since all the forces have a specific form, the problem is fairly easy to formulate mathematically, and for few-body systems, fairly easy to simulate.</p>
+
+<p>But as more bodies are included a system, the number of interactions increases on the order of $n^2$, which creates some challenges: one is computational complexity—that the number of forces to individually compute and add up becomes prohibitively large.</p>
+
+<p>Another is dynamical complexity: though the individual forces have a simple form, when they add up in large numbers the resultant motion becomes increasingly complex and unpredictable. As a result most <em>n</em>-body systems are considered dynamically unstable and have a high propensity to undergo chaotic motion. The only exception is the restricted case when $n=2$ (the two-body problem). It is the only instance of the problem with stable behaviour for all configurations—and for this reason only the two-body problem has been solved completely. Systems with $n \geq 3$ start to exhibit chaotic behaviour, and there are no general analytic methods to solve the problem in these cases. Though the motion can be (and usually is) approximated using numerical solvers, for complex systems there are extra considerations to account for, such as singularities (e.g. divergent trajectories, collisions) and non-conservative forces.</p>
+
+<p>For systems with many bodies the methods of statistical mechanics are often used. Monte Carlo Green functions, particle mesh methods, neural networks.</p>
+
+<h2 id="properties">properties</h2>
+
+<p>Each body is described by 3 coordinates in 3D Euclidean space, so for a system of $n$ bodies there are 3n coordinates.</p>
+
+<p>Coordinates/degrees of freedom.</p>
+
+<h2 id="the-two-body-problem">the two-body problem</h2>
+
+<p>The motion of a two body system is the only case of the $n$-body problem that is dynamically stable enough to have been solved completely. Though the two-body problem is really an approximation, since there aren’t really any truly isolated two-body systems, the analytic solution is a “decent” approximation to the motion of “mostly” isolated systems. Many celestial orbits, such as a moon orbiting a planet, or a planet orbiting a star, can in fact be treated as mostly isolated two-body systems, so the problem is still applicable.</p>
+
+<p>Always begin by treating the two-body problem, since data and methods of two-body systems allow us to determine the interaction between constituents in many-body systems.</p>
+
+<p>The other reason is that many large systems can be approximated by two-body systems or groupings of two-body systems, e.g. though the solar system is usually understood as an eight or nine-body system, the individual orbits of planets are isolated enough from each other that they can be modelled by two-body systems.</p>
+
+<h2 id="keplers-model-of-planetary-orbits">kepler’s model of planetary orbits</h2>
+
+<p>Kepler was the first to properly understand the geometry of planetary orbits, reified in his three laws of planetary motion:</p>
+
+<ol>
+  <li>planets move in elliptical orbits, with the Sun at one of the two foci</li>
+  <li>a line joining the planet to the Sun sweeps out equal areas in equal amounts of time</li>
+  <li>the orbital period, $\tau$, is related to the semimajor axis of the ellipse, $a$, via the relation $\tau^2 \propto a^3$</li>
+</ol>
+
+<p>The laws can be visualised as follows:</p>
+
+<p><code class="language-plaintext highlighter-rouge">kepler-laws.gif</code></p>
+
+<p>At the time (1619) this model of planetary motion was the best fit for the data. The first law gave a consistent geometry for all the observed planets; the second law accounted for Kepler’s observation that planets seemed to get faster as they approached the Sun, and vice versa; and the third law related the orbit of one planet to another. But these laws were purely empirical, not physical, and only gave a geometric description of the motion, not a causal one.</p>
+
+<p>The modern analytic approach to understanding planetary motion was devised by Newton, with the introduction of the laws of motion and universal gravitation (1687). This allowed the problem to be cast as a central force problem. It turned out that Newton’s formulation in fact mostly validated Kepler’s geometric model. Newtonian mechanics (and other formulations of mechanics) was able to prove that the mathematical equation of a planet’s orbit is in fact the equation for an ellipse (derivation in the next section).</p>
+
+<p>Newtonian mechanics also proved Kepler’s second law: in a short time $\d t$ the area swept out by the planet’s orbit is:</p>
+
+<p>\[
+\d A = \tfrac 12 | \v r \times \v v \; \d t |
+\]</p>
+
+<p>Replacing $\v v$ by $\v p / m$ and dividing both sides by $\d t$:</p>
+
+<p>\[
+\dd A t = \frac{ 1 }{ 2m } | \v r \times \v p | = \frac{ 1 }{ 2m } \v l
+\]</p>
+
+<p>since angular momentum $\v l = \v r \times \v p$. Since angular momentum is conserved in an isolated system, $\v l$ is constant, and the rate of change of area $\d A / \d t$ must also be constant.</p>
+
+<p>The only disagreement was that Newton’s third law (equal/opposite forces) required that the gravitational pull of a planet must also cause the Sun to move. In reality both the planet and the Sun orbit aroud their mutual barycentre (centre of mass), but the Sun is so heavy that the motion imparted to it by any planet is essentially negligible. This approximation is only valid if one mass is much heavier than the other (as is often the case in planetary orbits); if the two bodies have similar mass the barycentric motion is more apparent:</p>
+
+<p><code class="language-plaintext highlighter-rouge">kepler-equalmasses.gif</code></p>
+
+<h2 id="solving-the-two-body-problem">solving the two-body problem</h2>
+
+<p>The two-body problem is the only instance of the <em>n</em>-body problem stable enough to be solved in full generality.</p>
+
+<p>The problem is usually set up in a fixed reference frame where $\boldsymbol r_1$ and $\boldsymbol r_2$ denote the positions of each body, and $m_1$ and $m_2$ their masses:</p>
+
+<p><code class="language-plaintext highlighter-rouge">two-body-setup.png</code></p>
+
+<p>Note also the following quantities:</p>
+
+<ul>
+  <li>$\cdot$ the system’s centre of mass position:</li>
+</ul>
+
+<p>\[ \boldsymbol R = \frac{m_1 \boldsymbol r_1 + m_2 \boldsymbol r_2}{m_1 + m_2} \tag{2} \]</p>
+
+<ul>
+  <li>$\cdot$ the relative position:</li>
+</ul>
+
+<p>\[ \boldsymbol r = \boldsymbol r_2 - \boldsymbol r_1 \tag{3} \]</p>
+
+<ul>
+  <li>$\cdot$ the total mass:</li>
+</ul>
+
+<p>\[ M = m_1 + m_2 \tag{4} \]</p>
+
+<p>Each body exerts a force on the other given by Newton’s law of gravitation. The two equations of motion in this reference frame are:</p>
+
+<p>\[ \boldsymbol F_{1} = m_1 \ddot{\boldsymbol r}_1 = \frac{Gm_1 m_2}{r^3}(\boldsymbol r_2 - \boldsymbol r_1) \tag{5} \]</p>
+
+<p>\[ \boldsymbol F_{2} = m_2 \ddot{\boldsymbol r}_2 = \frac{Gm_1 m_2}{r^3}(\boldsymbol r_1 - \boldsymbol r_2) \tag{6} \]</p>
+
+<p>These are a set of coupled nonlinear differential equations. The goal of the problem is to solve these equations for $\boldsymbol r_1(t)$ and $\boldsymbol r_2(t)$, which will give the trajectories of the two bodies for all time.</p>
+
+<p>Solving the problem analytically requires first uncoupling the equations of motion [in their current form they are considered to be coupled since the two dependent variables $\v r_1$ and $\v r_2$ appear in both equations, meaning they are dependent on each other]. To uncouple the equations they must be recast in terms of a set of independent coordinates. It turns out that in many conservative <em>n</em>-body systems, the best choice of coordinates is the centre of mass position $\boldsymbol R$ and the relative position $\boldsymbol r$. The main reason is that they exploit the symmetries and conservation properties of the system to simplify the overall dynamics (more on this in a bit). Crucially, these coordinates still capture the essential dynamics of the system (e.g. total momentum and energy) but are dynamically independent, so using them reduces the formalism without changing the nature of the problem (coordinates of this kind are known as Jacobi coordinates).</p>
+
+<p>The transformations between the base coordinates and the Jacobi coordinates are as follows:</p>
+
+<p>\[ \boldsymbol r_1 = \boldsymbol R + \frac{m_2}{M} \boldsymbol r \hspace{2cm} \boldsymbol r_2 = \boldsymbol R - \frac{m_1}{M} \boldsymbol r \tag{7} \]</p>
+
+<p>Substituting these into equations 5 and 6 gives:</p>
+
+<p>\[ m_1 \big( \ddot{\boldsymbol{R}} + \tfrac{m_2}{M} \ddot{\boldsymbol{r}} \big) = \frac{G m_1 m_2}{r^3} \bigg[ \big( \boldsymbol{R} - \tfrac{m_1}{M} \boldsymbol{r} \big) - \big( \boldsymbol{R} + \tfrac{m_2}{M} \boldsymbol{r} \big) \bigg] \tag{8} \]</p>
+
+<p>\[ m_2 \big( \ddot{\boldsymbol R} - \tfrac{m_1}{M} \ddot{\boldsymbol r} \big) = \frac{G m_1 m_2}{r^3} \bigg[ \big( \boldsymbol R + \tfrac{m_2}{M} \boldsymbol r \big) - \big( \boldsymbol R - \tfrac{m_1}{M} \boldsymbol r \big) \bigg] \tag{9} \]</p>
+
+<p>Adding and subtracting equations (9) and (9) give the following two equations:</p>
+
+<p>\[ M \ddot{\boldsymbol R} = 0 \tag{10} \]</p>
+
+<p>\[ \mu \ddot{\boldsymbol r} = \frac{GM}{r^2} \tag{11} \]</p>
+
+<p>Equation (10) is an equation of motion for the centre of mass. That it equals zero means the centre of mass behaves like a free particle and does not accelerate.</p>
+
+<p>Equation (11) is an equation of motion for the relative position. It has the form of Newton’s law of gravitation, but for a body of mass $\mu$, which is a new quantity known as the <em>reduced mass:</em></p>
+
+<p>\[ \mu = \frac{m_1 m_2}{m_1 + m_2} \tag{12} \]</p>
+
+<p>Equations (10) and (11) are uncoupled. The original two-body problem can now be solved as two independent one-body systems, one describing the motion of the centre of mass and the other describing the motion of the relative position. Moreover, since the centre of mass motion is trivial (it travels with constant velocity), it can be solved for all time from just the initial conditions. All that remains is to solve the equation for the relative position. The solutions for $\boldsymbol R(t)$ and $\boldsymbol r(t)$ can be easily substituted back into the original coordinates $\boldsymbol r_1$ and $\boldsymbol r_2$ to give the trajectories of the two bodies.</p>
+
+<h2 id="the-equation-of-orbit">the equation of orbit</h2>
+
+<p>solution for $r(\phi)$.</p>
+
+<h2 id="dynamical-stability">dynamical stability</h2>
+
+<p>proof of virial theorem for the two body problem.</p>
+
+
+
+</main>
+
+</div>
+
+<br>
+<br>
+<footer id="footer">
+		<hr>
+		<div class="credits">
+		<span><a href="https://vabeywick.media">vinu abeywick 2020</a>&nbsp; |&nbsp; <a href="https://github.com/vaabe/tufte-minimal">tufte-minimal</a></span>
+		</div>  
+</footer>
+
+
+</div>
+
+</body>
+</html>

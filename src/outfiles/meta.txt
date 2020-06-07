@@ -1,0 +1,11 @@
+simulation metadata
+0.010000
+20.000000
+double pendulum
+2
+2
+np2
+1.000000
+1.000000
+1.000000
+1.000000

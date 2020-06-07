@@ -1,0 +1,88 @@
+---
+title: 'three body problem'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background','italics']
+    css: 'tufte.css'
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stats)
+library(gridExtra)
+library(scatterplot3d)
+library(plot3D)
+library(plotly)
+library(latex2exp)
+library(knitr)
+```
+
+\renewcommand{\v}[1]{{\boldsymbol #1}}
+\renewcommand{\dv}[1]{\dot{\boldsymbol{#1}}}
+\newcommand{\ddv}[1]{\ddot{\boldsymbol{#1}}}
+\newcommand{\hv}[1]{\hat{\boldsymbol{#1}}}
+\newcommand{\m}[1]{[ #1 ]}
+\renewcommand{\t}[1]{\widetilde{\boldsymbol{#1}}}
+\newcommand{\bfit}[1]{\textbf{\textit{#1}}}
+
+\renewcommand{\d}{\text{d}}
+\renewcommand{\dd}[2]{\frac{\d #1}{\d #2}}
+\newcommand{\ddd}[2]{\frac{\d^2 #1}{\d #2^2}}
+\newcommand{\ddt}[1]{\frac{\d #1}{\d t}}
+\newcommand{\dddt}[1]{\frac{\d^2 #1}{\d t^2}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\renewcommand{\grad}{\boldsymbol \nabla} 
+\renewcommand{\div}{\boldsymbol \nabla \cdot}
+\renewcommand{\curl}{\boldsymbol \nabla \times}
+\newcommand{\lap}{\nabla^2}
+\newcommand{\intinf}{\int_{-\infty}^\infty}
+\newcommand{\intzinf}{\int_0^\infty}
+\newcommand{\intinfz}{\int_{-\infty}^0}
+
+\newcommand{\eo}{\epsilon_0}
+\newcommand{\muo}{\mu_0}
+
+It is impossible to describe all the solutions to the three-body problem––the motion in general is chaotic, and no analytic solutions have been discovered. 
+
+Define a set of unitless variables.  
+
+Below is a contour plot of the effective potential:  
+
+\ 
+
+## lagrange points
+
+The effective potential has equilibrium points where the potential gradient is zero:
+ 
+For a three body system satisfying $m1 \gg m2 \gg m3$ there five equilibrium points.   
+
+The first three Lagrange points, L1, L2, and L3, are unstable––minor deviations from the equilibrium point will result in chaotic behavior. The Lagrange points L4 and L5 are stable––minor deviations from the equilibrium point will cause the third mass to undergo oscillatory motion around the point. This is known as libration, and the resulting orbit in the rotating frame is known as a tadpole orbit. If the amplitude of the oscillatory motion increases, the trajectory of the third mass may end up enclosing both Lagrange points––resulting in what is known as a horseshoe orbit.
+
+
+
+\ 
+
+## other solutions 
+
+figure eight
+
+euler
+
+etc 
+
+
+
+
+
+
+
+
+

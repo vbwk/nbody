@@ -11,8 +11,8 @@ void set_parameters (int argc, char *argv[], char **initSpecifier,
 
 	if (argc < 2)
 	{
-		printf(usage()); 
-		exit(0); 
+		set_parameters_manually (&initSpecifier, 
+			&timeStep, &totalRunTime); 
 	}
 
 	else
@@ -21,8 +21,8 @@ void set_parameters (int argc, char *argv[], char **initSpecifier,
 
 		if (argc > 2)
 		{
-			check_optional_parameters (argc, argv, &timeStep, 
-				&totalRunTime); 
+			check_optional_parameters (argc, argv, 
+				&timeStep, &totalRunTime); 
 		}
 	}
 
@@ -31,14 +31,58 @@ void set_parameters (int argc, char *argv[], char **initSpecifier,
 	FILE *timeData = fopen("./outfiles/time.csv", "w");
 	FILE *metaData = fopen("./outfiles/meta.txt", "w");
 
-	fprintf(metaData, "%s\n%f\n%f\n", "simulation metadata", *timeStep, 
-		*totalRunTime);
+	fprintf(metaData, "%s\n%f\n%f\n", system_name(), 
+		*timeStep, *totalRunTime);
 
 	fclose(metaData); 
 }
 
-void check_optional_parameters (int argc, char *argv[], double **timeStep, 
-	double **totalRunTime)
+void set_parameters_manually (char ***initSpecifier, 
+	double **timeStep, double **totalRunTime)
+{
+	printf(usage_message());
+
+	printf("Options:\n" 
+		"[1] Set parameters manually\n"
+		"[0] Exit\n");
+
+	int usageOption; 
+	scanf("%d", &usageOption); 
+
+	if (usageOption != 1) exit(0); 
+
+        printf("\nInitial conditions:\n"
+		"[Enter m to create new init file]\n"); 
+
+	char initOption[30]; 
+	scanf("%s", initOption);
+
+	if (strcmp(initOption, "m") == 0) 
+	{
+		make_init_file(); 
+	}
+
+	else 
+	{
+		**initSpecifier = (char*) malloc(strlen(initOption) + 1);
+		strcpy(**initSpecifier, initOption);
+	}
+
+	printf("\nTime step:\n"); 
+	scanf("%lf", &**timeStep);
+
+	printf("\nTotal run time:\n"); 
+	scanf("%lf", &**totalRunTime); 	
+}
+
+void make_init_file () 
+{
+	printf("\nBollocks.\n\n"); 
+	exit(0); 
+}
+
+void check_optional_parameters (int argc, char *argv[], 
+	double **timeStep, double **totalRunTime)
 {
 	for (int i = 1; i < argc; i++)
 	{
@@ -70,7 +114,9 @@ void initialize_system (char *initSpecifier, int *numParticles,
 	struct Vec3 **position, struct Vec3 **velocity)
 {
 	char filePath[50]; 
-	strcpy(filePath, "./initial_conditions/"); 
+	strcpy(filePath, "./systems/initial_conditions/");
+        strcat(filePath, system_name());  
+	strcat(filePath, "_"); 	
 	strcat(filePath, initSpecifier); 
 	strcat(filePath, ".txt");
 
@@ -133,8 +179,8 @@ void initialize_system (char *initSpecifier, int *numParticles,
 
 	FILE *metaData = fopen("./outfiles/meta.txt", "a");
 
-	fprintf(metaData, "%s%d\n%d\n%s\n", systemName, *numParticles, 
-		*numConstraints, initSpecifier);
+	fprintf(metaData, "%s\n%d\n%d\n", initSpecifier, 
+		*numParticles, *numConstraints);
 
 	for (int i = 0; i < *numParticles; i++)
 	{
@@ -149,7 +195,7 @@ void initialize_system (char *initSpecifier, int *numParticles,
 	fclose(metaData); 	
 
 	perror("\nInitialization");
-	printf("System: %s\n", systemName);
+	printf("System: %s\n\n", system_name());
 	printf("number of particles:     %d\n", *numParticles); 
 	printf("number of constraints:   %d\n", *numConstraints);  
 	printf("initial conditions:      %s\n", initSpecifier);
@@ -185,7 +231,7 @@ double diffclock (clock_t clock1, clock_t clock2)
 	return diffms; 
 }
 
-char *usage ()
+char *usage_message ()
 {
-	return "Usage: ./a.out initfile [-DT timestep] [-TT totalruntime]\n"; 
+	return "\nUsage: ./a.out initfile [-D timestep] [-T totalruntime]\n\n"; 
 }

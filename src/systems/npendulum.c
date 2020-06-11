@@ -1,3 +1,4 @@
+#include "init.h"
 #include "dynamics.h"
 #include "fields.h"
 #include "constraints.h"
@@ -39,4 +40,9 @@ void project_constraints (int numParticles, double mass[],
 			(*position)[i] = newGuess; 	
 		}
 	}
+}
+
+char *system_name () 
+{
+	return "npendulum"; 
 }

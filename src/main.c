@@ -62,5 +62,5 @@ int main (int argc, char *argv[])
 	printf("Done. Elapsed Time: %f s \n", 
 		diffclock(endTime, startTime) / 10);
 
-	printf("\nEnd of program.\n\n"); 	
+	printf("\nEnd of program.\n\n");
 }	

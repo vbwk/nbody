@@ -1,4 +1,4 @@
-simple pendulum
+npendulum
 1
 1
 1

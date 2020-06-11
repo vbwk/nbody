@@ -1,4 +1,4 @@
-free particle gravity
+freeparticlegrav
 3
 0
 1

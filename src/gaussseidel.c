@@ -7,7 +7,7 @@ void get_new_state (double t, double timeStep, int numParticles,
 	struct Vec3 velocity[], struct Vec3 **newPosition, 
 	struct Vec3 **newVelocity)
 {
-	/* accumulate forces */ 
+	/* apply field forces */ 
 
 	struct Vec3 *forceAccumulator = calloc(numParticles, 
 			sizeof(struct Vec3)); 
@@ -32,8 +32,8 @@ void get_new_state (double t, double timeStep, int numParticles,
 
 	int numIterations = 10; 	
 
-	for (int i = 0; i < numIterations; i++) {
-	
+	for (int i = 0; i < numIterations; i++) 
+	{
 		project_constraints (numParticles, mass, constraint, 
 			newPosition);
 	}

@@ -7,8 +7,13 @@
 void set_parameters (int argc, char *argv[], char **initSpecifier, 
 	double *timeStep, double *totalRunTime); 
 
-void check_optional_parameters (int argc, char *argv[], double **timeStep, 
-	double **totalRunTime); 
+void set_parameters_manually (char ***initSpecifier, 
+	double **timeStep, double **totalRunTime); 
+
+void make_init_file (); 
+
+void check_optional_parameters (int argc, char *argv[], 
+	double **timeStep, double **totalRunTime); 
 
 void initialize_system (char *initSpecifier, int *numParticles, 
 	int *numConstraints, double **mass, double **constraint, 
@@ -19,6 +24,8 @@ void write_system_state (int t, double timeStep, int numParticles,
 
 double diffclock (clock_t clock1, clock_t clock2); 
 
-char *usage (); 
+char *usage_message (); 
+
+char *system_name (); 
 
 #endif

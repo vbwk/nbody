@@ -1,4 +1,4 @@
-double pendulum
+npendulum
 2
 2
 1

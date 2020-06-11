@@ -1,2 +1,0 @@
-Rscript ./data/makedata.R
-Rscript ./data/makeplots.R

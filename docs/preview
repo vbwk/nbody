@@ -1,4 +1,4 @@
-# bash script to build site
+# bash script to preview site locally
 
 export PATH=$PATH:/home/v/.gem/ruby/2.7.0/bin
 gem install bundler

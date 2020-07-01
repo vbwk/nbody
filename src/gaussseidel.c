@@ -1,49 +1,73 @@
-#include <stdlib.h>
+#include <stdio.h>
 #include "dynamics.h"
+#include "write.h"
+#include "system.h"
 #include "odes.h"
 
-void get_new_state (double t, double timeStep, int numParticles, 
-	double mass[], double constraint[], struct Vec3 position[], 
-	struct Vec3 velocity[], struct Vec3 **newPosition, 
-	struct Vec3 **newVelocity)
+void run_simulation (params simulation, config manifold) 
 {
-	/* apply field forces */ 
+	int numTimePoints = simulation.totalRunTime / simulation.timeStep;
 
-	struct Vec3 *forceAccumulator = calloc(numParticles, 
-			sizeof(struct Vec3)); 
+	printf("\nSolver: %s\n"
+		"Coordinates: %s\n"
+		"\nRunning simulation...\n", 
+		solver_method(), 
+		coordinates_type()); 
 
-	apply_fields (numParticles, mass, position, velocity, 
-		&forceAccumulator); 
-
-	/* integrate system to new state */
-
-	struct Vec3 *acceleration = forceAccumulator;  
-
-	*newPosition = calloc(numParticles, sizeof(struct Vec3)); 
-        *newVelocity = calloc(numParticles, sizeof(struct Vec3));
-
-	integrate_system_state (t, timeStep, numParticles, mass, 
-		position, velocity, acceleration, newPosition, 
-		newVelocity); 
-
-	free(forceAccumulator);
-
-	/* project constraints */
-
-	int numIterations = 10; 	
-
-	for (int i = 0; i < numIterations; i++) 
+	for (int t = 0; t < numTimePoints; t++)
 	{
-		project_constraints (numParticles, mass, constraint, 
-			newPosition);
+		/* write current system state to output */ 
+
+		write_system_state (t, simulation, manifold); 
+
+		/* apply field forces */
+
+		vector *acceleration = new_vector_array (
+			manifold.N, manifold.J); 
+
+		apply_field_forces (manifold, acceleration);
+
+		/* integrate system to new state */ 
+
+		integrate_system_state (t, simulation, manifold, acceleration);
+
+		/* project constraints */
+
+		for (int i = 0; i < 10; i++)
+		{
+			project_constraints(manifold); 
+		}
+
+		for (int n = 0; n < manifold.N; n++)
+		{
+			manifold.particle[n].newVelocity = vector_mult(
+				vector_subt(
+					manifold.particle[n].position,
+				       	manifold.particle[n].newPosition), 
+				(1 / simulation.timeStep)); 
+		} 
+
+		/* update state for next time step */
+
+		for (int n = 0; n < manifold.N; n++)
+		{
+			manifold.particle[n].position = 
+				manifold.particle[n].newPosition; 
+
+			manifold.particle[n].velocity = 
+				manifold.particle[n].newVelocity;
+		}	
 	}
 
-	/* update velocities */ 
+	printf("Done.\n"); 	
+}
 
-	for (int i = 0; i < numParticles; i++)
-	{
-		(*newVelocity)[i] = vec3_mult(
-			vec3_subt(position[i], (*newPosition)[i]), 
-			(1 / timeStep)); 
-	}
-}	
+char *coordinates_type ()
+{
+	return "x, y, z (rectangular)"; 
+}
+
+char *solver_method ()
+{
+	return "Gauss Seidel"; 
+}

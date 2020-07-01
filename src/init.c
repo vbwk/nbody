@@ -3,235 +3,107 @@
 #include <string.h>
 #include "init.h"
 
-void set_parameters (int argc, char *argv[], char **initSpecifier, 
-	double *timeStep, double *totalRunTime)
+config initialize_system_manifold (params simulation)
 {
-	*timeStep = 0.01; 
-	*totalRunTime = 20;
+	simulation.systemName = system_name(); 
 
-	if (argc < 2)
-	{
-		set_parameters_manually (&initSpecifier, 
-			&timeStep, &totalRunTime); 
-	}
+	char filepath[50];
+	snprintf(filepath, 
+		sizeof(filepath), 
+		"./systems/initial_conditions/%s_%s.txt",
+		simulation.systemName, 
+		simulation.initSpecifier); 
 
-	else
-	{
-		*initSpecifier = argv[1];
-
-		if (argc > 2)
-		{
-			check_optional_parameters (argc, argv, 
-				&timeStep, &totalRunTime); 
-		}
-	}
-
-	FILE *positionData = fopen("./outfiles/position.csv", "w"); 
-	FILE *velocityData = fopen("./outfiles/velocity.csv", "w"); 
-	FILE *timeData = fopen("./outfiles/time.csv", "w");
-	FILE *metaData = fopen("./outfiles/meta.txt", "w");
-
-	fprintf(metaData, "%s\n%f\n%f\n", system_name(), 
-		*timeStep, *totalRunTime);
-
-	fclose(metaData); 
-}
-
-void set_parameters_manually (char ***initSpecifier, 
-	double **timeStep, double **totalRunTime)
-{
-	printf(usage_message());
-
-	printf("Options:\n" 
-		"[1] Set parameters manually\n"
-		"[0] Exit\n");
-
-	int usageOption; 
-	scanf("%d", &usageOption); 
-
-	if (usageOption != 1) exit(0); 
-
-        printf("\nInitial conditions:\n"
-		"[Enter m to create new init file]\n"); 
-
-	char initOption[30]; 
-	scanf("%s", initOption);
-
-	if (strcmp(initOption, "m") == 0) 
-	{
-		make_init_file(); 
-	}
-
-	else 
-	{
-		**initSpecifier = (char*) malloc(strlen(initOption) + 1);
-		strcpy(**initSpecifier, initOption);
-	}
-
-	printf("\nTime step:\n"); 
-	scanf("%lf", &**timeStep);
-
-	printf("\nTotal run time:\n"); 
-	scanf("%lf", &**totalRunTime); 	
-}
-
-void make_init_file () 
-{
-	printf("\nBollocks.\n\n"); 
-	exit(0); 
-}
-
-void check_optional_parameters (int argc, char *argv[], 
-	double **timeStep, double **totalRunTime)
-{
-	for (int i = 1; i < argc; i++)
-	{
-		if (argv[i][0] == '-' && argv[i+1] != NULL)
-		{
-			int option = argv[i][1]; 
-			switch (option)
-			{
-			
-				case 'D': case 'd':
-					**timeStep = atof(argv[i+1]); 
-					break;
-
-				case 'T': case 't':
-					**totalRunTime = atof(argv[i+1]); 
-					break;
-
-				default:
-					printf("Illegal option\n"); 
-					exit(0);
-
-			}
-		}
-	}
-}	
-
-void initialize_system (char *initSpecifier, int *numParticles, 
-	int *numConstraints, double **mass, double **constraint, 
-	struct Vec3 **position, struct Vec3 **velocity)
-{
-	char filePath[50]; 
-	strcpy(filePath, "./systems/initial_conditions/");
-        strcat(filePath, system_name());  
-	strcat(filePath, "_"); 	
-	strcat(filePath, initSpecifier); 
-	strcat(filePath, ".txt");
-
-	FILE *initFile; 
-	initFile = fopen(filePath, "r"); 
+	FILE *initFile = fopen(filepath, "r"); 
 
 	if (!initFile)
 	{
-		perror("Init file error");
-	       	exit(0); 	
-	}	
-
-	char systemName[50];  
-	fgets(systemName, 50, initFile); 	
-
-	char buffer[50]; 
-	*numParticles = atoi(fgets(buffer, 50, initFile));
-	*numConstraints = atoi(fgets(buffer, 50, initFile)); 	
-
-	*mass = calloc(*numParticles, sizeof(double));
-
-	for (int i = 0; i < *numParticles; i++)
-	{
-		(*mass)[i] = atof(fgets(buffer, 50, initFile)); 
+		perror("init file error"); 
+		exit(0);
 	}
 
-	*position = calloc(*numParticles, sizeof(struct Vec3));
-	*velocity = calloc(*numParticles, sizeof(struct Vec3)); 
+	char buffer[50];
 
-	for (int i = 0; i < *numParticles; i++)
+	config manifold;
+
+	manifold.N = atoi(fgets(buffer, 50, initFile));
+	manifold.J = atoi(fgets(buffer, 50, initFile)); 	
+	manifold.K_H = atoi(fgets(buffer, 50, initFile)); 
+	manifold.K_S = atoi(fgets(buffer, 50, initFile)); 
+	manifold.K_I = atoi(fgets(buffer, 50, initFile));
+
+	manifold.particle = new_particle_state (
+		manifold.N, manifold.J); 
+
+	for (int n = 0; n < manifold.N; n++)
 	{
-		(*position)[i].x = 
-			atof(fgets(buffer, 50, initFile));
+		skip_line(initFile); 
 
-		(*position)[i].y = 
-			atof(fgets(buffer, 50, initFile));
+		manifold.particle[n].mass = 
+			atof(fgets(buffer, 50, initFile)); 
 
-		(*position)[i].z = 
-			atof(fgets(buffer, 50, initFile));
+		skip_line(initFile); 
 
-		(*velocity)[i].x =
-			atof(fgets(buffer, 50, initFile));
-
-		(*velocity)[i].y =
-			atof(fgets(buffer, 50, initFile));
-
-		(*velocity)[i].z =
-			atof(fgets(buffer, 50, initFile));
-	}
-
-	*constraint = calloc(*numConstraints, sizeof(double)); 
-
-	if (*numConstraints != 0)
-	{
-		for (int i = 0; i < *numConstraints; i++)
+		for (int j = 0; j < manifold.J; j++)
 		{
-			(*constraint)[i] = atof(fgets(buffer, 50, initFile));
-		}	
+			manifold.particle[n].position.coordinate[j] = 
+				atof(fgets(buffer, 50, initFile)); 
+		}
+
+		for (int j = 0; j < manifold.J; j++)
+		{
+			manifold.particle[n].velocity.coordinate[j] = 
+				atof(fgets(buffer, 50, initFile)); 
+		}
 	}
 
-	FILE *metaData = fopen("./outfiles/meta.txt", "a");
+	skip_line(initFile); 
 
-	fprintf(metaData, "%s\n%d\n%d\n", initSpecifier, 
-		*numParticles, *numConstraints);
+	manifold.constraint = initialize_constraints (manifold); 
 
-	for (int i = 0; i < *numParticles; i++)
+	for (int k = 0; k < manifold.K_H; k++)
 	{
-		fprintf(metaData, "%f\n", (*mass)[i]); 
+		manifold.constraint.holonomic[k] = 
+			atof(fgets(buffer, 50, initFile)); 
 	}
 
-	for (int i = 0; i < *numConstraints; i++)
+	skip_line(initFile); 
+
+	for (int k = 0; k < manifold.K_S; k++)
 	{
-		fprintf(metaData, "%f\n", (*constraint)[i]); 
-	}	
-
-	fclose(metaData); 	
-
-	perror("\nInitialization");
-	printf("System: %s\n\n", system_name());
-	printf("number of particles:     %d\n", *numParticles); 
-	printf("number of constraints:   %d\n", *numConstraints);  
-	printf("initial conditions:      %s\n", initSpecifier);
-}
-
-void write_system_state (int t, double timeStep, int numParticles, 
-	struct Vec3 position[], struct Vec3 velocity[])
-{
-	FILE *timeData = fopen("./outfiles/time.csv", "a"); 
-	FILE *positionData = fopen("./outfiles/position.csv", "a"); 
-	FILE *velocityData = fopen("./outfiles/velocity.csv", "a"); 
-
-	fprintf(timeData, "%f\n", t * timeStep); 
-
-	for (int i = 0; i < numParticles; i++)
-	{
-		fprintf(positionData, "%f, %f, %f\n", 
-			position[i].x, position[i].y, position[i].z);
-
-		fprintf(velocityData, "%f, %f, %f\n", 
-			velocity[i].x, velocity[i].y, velocity[i].z); 
+		manifold.constraint.semiholonomic[k] = 
+			atof(fgets(buffer, 50, initFile)); 
 	}
 
-	fclose(timeData); 
-	fclose(positionData); 
-	fclose(velocityData); 
+	skip_line(initFile); 
+
+	for (int k = 0; k < manifold.K_I; k++)
+	{
+		manifold.constraint.inequality[k] = 
+			atof(fgets(buffer, 50, initFile)); 
+	}
+
+	fclose(initFile);
+
+	perror("\nInitialization"); 
+	print_init_message (simulation, manifold); 	
+
+	return manifold; 
 }
 
-double diffclock (clock_t clock1, clock_t clock2)
+void skip_line (FILE *initFile)
 {
-	double diffticks = clock1 - clock2; 
-	double diffms = (diffticks * 10) / CLOCKS_PER_SEC; 
-	return diffms; 
+	char buffer[50]; 
+	fgets(buffer, 50, initFile); 
 }
 
-char *usage_message ()
+void print_init_message (params simulation, config manifold)
 {
-	return "\nUsage: ./a.out initfile [-D timestep] [-T totalruntime]\n\n"; 
+	printf("\nSystem: %s\n"
+		"Initial conditions: %s\n"
+		"Number of particles: %d\n",
+		simulation.systemName, 
+		simulation.initSpecifier, 
+		manifold.N); 
 }
+

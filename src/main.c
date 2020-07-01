@@ -1,66 +1,25 @@
-#include <stdio.h>
-#include "vec3.h"
+#include "manifold.h"
 #include "init.h"
+#include "write.h"
 #include "dynamics.h"
 
 int main (int argc, char *argv[])
 {
-	/* set simulation parameters */ 
+	params simulation; 
 
-	char *initSpecifier;
-	double timeStep, totalRunTime; 
+	simulation.timeStep = 0.01; 
+	simulation.totalRunTime = 20; 
+	simulation.initSpecifier = argv[1];
 
-	set_parameters (argc, argv, &initSpecifier, 
-		&timeStep, &totalRunTime); 
+	/* initialize system manifold */ 
 
-	/* initialize system */ 
+	config manifold = initialize_system_manifold (simulation); 
 
-	int numParticles, numConstraints; 
-	double *mass, *constraint;  
-	struct Vec3 *position, *velocity; 
+	/* initialize file output */ 
 
-	initialize_system (initSpecifier, &numParticles, &numConstraints,
-		&mass, &constraint, &position, &velocity);
+	initialize_output_files (simulation, manifold);
 
-	/* run simulation */ 	
+	/* run simulation */ 
 
-	int numTimePoints = totalRunTime / timeStep;
-        printf("\nRunning simulation...\n"); 
-
-        clock_t startTime = clock(); 
-
-	for (int t = 0; t < numTimePoints; t++)
-	{
-		/* write current state to output files */
-
-		write_system_state (t, timeStep, numParticles, 
-			position, velocity); 
-
-		/* get new state */
-
-		struct Vec3 *newPosition, *newVelocity; 
-
-		get_new_state (t, timeStep, numParticles, 
-			mass, constraint, position, velocity, 
-			&newPosition, &newVelocity);
-
-#if 0
-		/* resolve collisions */
-
-		resolve_collisions (numParticles, mass, 
-			&newPosition, &newVelocity); 	
-#endif
-
-		/* move particles to new state */
-
-		position = newPosition; 
-		velocity = newVelocity;
-	}
-
-	clock_t endTime = clock();
-
-	printf("Done. Elapsed Time: %f s \n", 
-		diffclock(endTime, startTime) / 10);
-
-	printf("\nEnd of program.\n\n");
-}	
+	run_simulation (simulation, manifold); 	
+}

@@ -1,45 +1,70 @@
-#include "init.h"
-#include "dynamics.h"
+#include "system.h"
 #include "fields.h"
 #include "constraints.h"
 
-void apply_fields (int numParticles, double mass[], 
-	struct Vec3 position[], struct Vec3 velocity[], 
-	struct Vec3 **forceAccumulator)
+void apply_field_forces (config manifold, vector *acceleration)
 {
-	uniform_gravity (numParticles, mass, forceAccumulator); 	
+	vector *force = new_vector_array (manifold.N, manifold.J);
+
+	/* accumulate forces */ 
+
+	uniform_gravity (manifold, force);
+
+	/* compute acceleration */ 
+
+	for (int n = 0; n < manifold.N; n++)
+	{
+		acceleration[n] = vector_div (
+			force[n], manifold.particle[n].mass); 
+	}
 }
 
-void project_constraints (int numParticles, double mass[], 
-	double constraint[], struct Vec3 **position) 
-	
+void project_constraints (config manifold)
 {
-	for (int i = 0; i < numParticles; i++)
+	/* gauss-seidel distance constraints with particle 0 at origin */ 
+	
+	for (int n = 0; n < manifold.N; n++)
 	{
-		if (i == 0)
+		if (n == 0)
 		{
-			struct Vec3 initialGuess = (*position)[i];
-			struct Vec3 otherPosition = { 0, 0, 0 }; 
-		        struct Vec3 newGuess; 	
-			
-			distance_constraint (initialGuess, otherPosition, 
-				constraint[i], &newGuess);
+			vector pos1 = manifold.particle[n].newPosition;
+		       	vector pos2 = new_vector(manifold.J);
+			double w1 = 1 / manifold.particle[n].mass; 
+			double w2 = 0; 
+			double constraint = manifold.constraint.holonomic[n]; 
 
-			(*position)[i] = newGuess; 	
+			vector correction = gs_distance_constraint (
+				pos1, pos2, w1, w2, constraint); 
+
+			manifold.particle[n].newPosition = vector_add(
+				manifold.particle[n].newPosition, correction); 
 		}
 
 		else
 		{
-			struct Vec3 initialGuess = (*position)[i];
-			struct Vec3 otherPosition = (*position)[i-1]; 
-		        struct Vec3 newGuess; 	
-			
-			distance_constraint (initialGuess, otherPosition, 
-				constraint[i], &newGuess);
+			vector pos1 = manifold.particle[n].newPosition;
+			vector pos2 = manifold.particle[n - 1].position; 
+			double w1 = 1 / manifold.particle[n].mass; 
+			double w2 = 1 / manifold.particle[n - 1].mass; 
+			double constraint = manifold.constraint.holonomic[n]; 
 
-			(*position)[i] = newGuess; 	
+			vector correction = gs_distance_constraint (
+				pos1, pos2, w1, w2, constraint);
+
+			manifold.particle[n].newPosition = vector_add(
+				manifold.particle[n].newPosition, correction); 
 		}
-	}
+	}	
+}
+
+int num_generalized_coordinates ()
+{
+	return 2; 
+}
+
+char *generalized_coordinate_type ()
+{
+	return "r, φ (2D polar)"; 
 }
 
 char *system_name () 

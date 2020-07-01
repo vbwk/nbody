@@ -1,19 +1,14 @@
+#include <stdlib.h>
 #include "fields.h"
 
-void uniform_gravity (int numParticles, double mass[], 
-	struct Vec3 **forceAccumulator)
-{
-	double G = 9.81;
+#define G 9.81
 
-	for (int i = 0; i < numParticles; i++)
+void uniform_gravity (config manifold, vector *force)
+{
+	for (int n = 0; n < manifold.N; n++)
 	{
-		(*forceAccumulator)[i].z += 
-			mass[i] * -G;
+		force[n].coordinate[1] += 
+			manifold.particle[n].mass * -G; 
 	}
-}
+}	
 
-void newtonian_gravity (int numParticles, double mass[], 
-	struct Vec3 position[], struct Vec3 **forceAccumulator)
-{
-
-}

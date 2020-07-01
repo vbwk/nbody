@@ -1,9 +1,0 @@
-make
-
-./a.out n2
-
-echo "Processing data..."
-Rscript ./data/makedata.R
-
-echo "Building graphics..."
-Rscript ./data/makeplots.R

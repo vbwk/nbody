@@ -1,19 +1,28 @@
-npendulum
 2
-2
-1
-1
-1
-0
-0
-0
-0
-0
+3
 2
 0
 0
+#mass1
+1
+#coordinates1
+1
 0
 0
 0
+0
+0
+#mass2
+2
+#coordinates2
+2
+0
+0
+0
+0
+0
+#holonomic constraints
 1
 1
+#semiholonomic constraints
+#inequality constraints

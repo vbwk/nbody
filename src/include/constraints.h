@@ -1,10 +1,10 @@
 #ifndef CONSTRAINTS_H
 #define CONSTRAINTS_H
 
-#include "vec3.h"
+#include "vector.h"
+#include "manifold.h"
 
-void distance_constraint (struct Vec3 position, 
-	struct Vec3 otherPosition, double constraint, 
-	struct Vec3 *newPosition);  
+vector gs_distance_constraint (vector pos1, vector pos2, 
+	double w1, double w2, double constraint); 
 
 #endif

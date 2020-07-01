@@ -1,12 +1,9 @@
 #ifndef FIELDS_H
 #define FIELDS_H
 
-#include "vec3.h"
+#include "vector.h"
+#include "manifold.h"
 
-void uniform_gravity (int numParticles, double mass[], 
-	struct Vec3 **forceAccumulator);
-
-void newtonian_gravity (int numParticles, double mass[], 
-	struct Vec3 position[], struct Vec3 **forceAccumulator);
+void uniform_gravity (config manifold, vector *force); 
 
 #endif

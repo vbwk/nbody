@@ -1,30 +1,21 @@
 #ifndef INIT_H
 #define INIT_H
 
-#include <time.h>
-#include "vec3.h"
+#include <stdio.h>
+#include "manifold.h"
 
-void set_parameters (int argc, char *argv[], char **initSpecifier, 
-	double *timeStep, double *totalRunTime); 
+typedef struct simulation {
+	char *systemName; 
+	char *initSpecifier; 
+	double timeStep; 
+	double totalRunTime; 
+} simulation; 
 
-void set_parameters_manually (char ***initSpecifier, 
-	double **timeStep, double **totalRunTime); 
+config initialize_system_manifold (params simulation); 
 
-void make_init_file (); 
+void skip_line (FILE *initFile);
 
-void check_optional_parameters (int argc, char *argv[], 
-	double **timeStep, double **totalRunTime); 
-
-void initialize_system (char *initSpecifier, int *numParticles, 
-	int *numConstraints, double **mass, double **constraint, 
-	struct Vec3 **position, struct Vec3 **velocity); 
-
-void write_system_state (int t, double timeStep, int numParticles, 
-	struct Vec3 position[], struct Vec3 velocity[]); 
-
-double diffclock (clock_t clock1, clock_t clock2); 
-
-char *usage_message (); 
+void print_init_message (params simulation, config manifold); 
 
 char *system_name (); 
 

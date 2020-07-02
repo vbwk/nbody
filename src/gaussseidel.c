@@ -59,12 +59,12 @@ void run_simulation (params simulation, config manifold)
 		}	
 	}
 
-	printf("Done.\n"); 	
+	printf("Done.\n\n"); 	
 }
 
 char *coordinates_type ()
 {
-	return "x, y, z (rectangular)"; 
+	return "rectangular (x, y, z)"; 
 }
 
 char *solver_method ()

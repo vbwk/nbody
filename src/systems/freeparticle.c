@@ -25,16 +25,6 @@ void project_constraints (config manifold)
 
 }
 
-int num_generalized_coordinates ()
-{
-	return 3; 
-}
-
-char *generalized_coordinate_type ()
-{
-	return "x, y, z (rectangular)"; 
-}
-
 char *system_name () 
 {
 	return "freeparticle"; 

@@ -1,7 +1,7 @@
 #ifndef DYNAMICS_H
 #define DYNAMICS_H
 
-#include "manifold.h"
+#include "simulation.h"
 
 void run_simulation (params simulation, config manifold); 
 

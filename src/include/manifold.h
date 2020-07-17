@@ -29,14 +29,6 @@ typedef struct config {
 	cnstr constraint; 
 } config; 
 
-typedef struct params {
-	double timeStep; 
-	double totalRunTime; 
-	int numTimePoints; 
-	char *initSpecifier;
-       	char *systemName; 	
-} params; 
-
 state *new_particle_state (int N, int J);
 
 cnstr initialize_constraints (config manifold); 

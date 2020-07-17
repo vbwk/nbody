@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include "manifold.h"
 
-#include <stdio.h>
-
 state *new_particle_state (int N, int J)
 {
 	state *particle = malloc(N * sizeof(state)); 

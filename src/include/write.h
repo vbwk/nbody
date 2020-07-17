@@ -1,8 +1,8 @@
 #ifndef WRITE_H
 #define WRITE_H
 
-#include "vector.h"
-#include "manifold.h"
+#include "simulation.h"
+
 #include "init.h"
 
 void initialize_output_files (params simulation, config manifold); 

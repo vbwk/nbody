@@ -1,7 +1,6 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#include "vector.h"
 #include "manifold.h"
 
 void apply_field_forces (config manifold, vector *acceleration); 

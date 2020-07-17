@@ -2,14 +2,7 @@
 #define INIT_H
 
 #include <stdio.h>
-#include "manifold.h"
-
-typedef struct simulation {
-	char *systemName; 
-	char *initSpecifier; 
-	double timeStep; 
-	double totalRunTime; 
-} simulation; 
+#include "simulation.h"
 
 config initialize_system_manifold (params simulation); 
 

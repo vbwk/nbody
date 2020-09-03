@@ -57,12 +57,12 @@ vdata[ , 4:6] = position_cartesian
 vdata[ , 7:9] = velocity_cartesian
 
 ## rename columns
-names(vdata)[4:9] = c("x", "y", "z", "dot_x", "dot_y", "dot_z")
+names(vdata)[4:9] = c("x", "y", "z", "vx", "vy", "vz")
 
 ## compute momentum data
-vdata$p_x = vdata$mass * vdata$dot_x
-vdata$p_y = vdata$mass * vdata$dot_y
-vdata$p_z = vdata$mass * vdata$dot_z
+vdata$p_x = vdata$mass * vdata$vx
+vdata$p_y = vdata$mass * vdata$vy
+vdata$p_z = vdata$mass * vdata$vz
 
 ## make horizontal dataset [reshape]
 hdata = reshape(vdata, 
@@ -70,7 +70,7 @@ hdata = reshape(vdata,
 		idvar = "time", 
 		timevar = "particle", 
 		v.names = c("mass", "x", "y", "z", 
-			    "dot_x", "dot_y", "dot_z", 
+			    "vx", "vy", "vz", 
 			    "p_x", "p_y", "p_z")) 
 
 ## save data
@@ -78,4 +78,4 @@ save(time_step, run_time, num_time_steps, num_particles,
      initial_conditions, mass_values, vdata, hdata,
      file = "sim.Rdata")
 
-#write.csv(vdata, "debug.csv")
+write.csv(vdata, "../graphics/cartposition.csv")

@@ -1,0 +1,38 @@
+3
+3
+3
+0
+0
+#mass1
+1
+#coordinates1
+1
+0
+0
+0
+0
+0
+#mass2
+0.5
+#coordinates2
+2
+0
+0
+0
+0
+0
+#mass3
+1
+#coordinates3
+2.7
+0
+0
+0
+0
+0
+#holonomic constraints
+1
+1
+0.7
+#semiholonomic constraints
+#inequality constraints

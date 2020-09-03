@@ -19,7 +19,14 @@ write :
 	./a.out $(init) -dt $(dt) -tt $(tt)
 	@echo Writing data...
 	Rscript ./data/data.R
-	Rscript ./data/graphics.R
+	# Rscript ./data/graphics.R
 	@echo Done.
 
+save :
+	mkdir -p ../examples/$(system)/$(init)_$(solver)_$(dt)_$(tt)/
+	cp ./graphics/cartposition.csv ../examples/$(system)/$(init)_$(solver)_$(dt)_$(tt)/
+	cp ./graphics/permaloop.html ../examples/$(system)/$(init)_$(solver)_$(dt)_$(tt)/
+
 w : run write 
+
+ws : run write save

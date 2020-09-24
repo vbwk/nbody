@@ -21,7 +21,7 @@ void apply_field_forces (config manifold, vector *acceleration)
 
 void project_constraints (config manifold)
 {
-	/* configure constraints here */
+	/* configure newton-raphson constraints here */
 
 }
 

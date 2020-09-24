@@ -1,5 +1,5 @@
 system = npendulum
-init = n1
+init = n7
 solver = gaussseidel
 integrator = verlet
 dt = 0.01
@@ -19,7 +19,7 @@ write :
 	./a.out $(init) -dt $(dt) -tt $(tt)
 	@echo Writing data...
 	Rscript ./data/data.R
-	# Rscript ./data/graphics.R
+	Rscript ./data/graphics.R
 	@echo Done.
 
 save :

@@ -22,7 +22,7 @@ void apply_field_forces (config manifold, vector *acceleration)
 void project_constraints (config manifold)
 {
 	/* gauss-seidel distance constraints with particle 0 at origin */ 
-	
+
 	for (int n = 0; n < manifold.N; n++)
 	{
 		if (n == 0)

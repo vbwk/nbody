@@ -1,9 +1,9 @@
 system = npendulum
-init = n7
+init = n2
 solver = gaussseidel
 integrator = verlet
 dt = 0.01
-tt = 100
+tt = 500
 
 simfiles = main.c\
 	   vector.c manifold.c\

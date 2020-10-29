@@ -3,7 +3,7 @@
 #include <string.h>
 #include "init.h"
 
-config initialize_system_manifold (params simulation)
+config initialize_system_manifold(params simulation)
 {
 	simulation.systemName = system_name(); 
 
@@ -14,9 +14,9 @@ config initialize_system_manifold (params simulation)
 		simulation.systemName, 
 		simulation.initSpecifier); 
 
-	FILE *initFile = fopen(filepath, "r"); 
+	FILE *initfile = fopen(filepath, "r"); 
 
-	if (!initFile)
+	if (!initfile)
 	{
 		perror("init file error"); 
 		exit(0);
@@ -26,66 +26,66 @@ config initialize_system_manifold (params simulation)
 
 	config manifold;
 
-	manifold.N = atoi(fgets(buffer, 50, initFile));
-	manifold.J = atoi(fgets(buffer, 50, initFile)); 	
-	manifold.K_H = atoi(fgets(buffer, 50, initFile)); 
-	manifold.K_S = atoi(fgets(buffer, 50, initFile)); 
-	manifold.K_I = atoi(fgets(buffer, 50, initFile));
+	manifold.N = atoi(fgets(buffer, 50, initfile));
+	manifold.J = atoi(fgets(buffer, 50, initfile)); 	
+	manifold.K_H = atoi(fgets(buffer, 50, initfile)); 
+	manifold.K_S = atoi(fgets(buffer, 50, initfile)); 
+	manifold.K_I = atoi(fgets(buffer, 50, initfile));
 
 	manifold.particle = new_particle_state (
 		manifold.N, manifold.J); 
 
 	for (int n = 0; n < manifold.N; n++)
 	{
-		skip_line(initFile); 
+		skip_line(initfile); 
 
 		manifold.particle[n].mass = 
-			atof(fgets(buffer, 50, initFile)); 
+			atof(fgets(buffer, 50, initfile)); 
 
-		skip_line(initFile); 
+		skip_line(initfile); 
 
 		for (int j = 0; j < manifold.J; j++)
 		{
 			manifold.particle[n].position.coordinate[j] = 
-				atof(fgets(buffer, 50, initFile)); 
+				atof(fgets(buffer, 50, initfile)); 
 		}
 
 		for (int j = 0; j < manifold.J; j++)
 		{
 			manifold.particle[n].velocity.coordinate[j] = 
-				atof(fgets(buffer, 50, initFile)); 
+				atof(fgets(buffer, 50, initfile)); 
 		}
 	}
 
-	skip_line(initFile); 
+	skip_line(initfile); 
 
 	manifold.constraint = initialize_constraints (manifold); 
 
 	for (int k = 0; k < manifold.K_H; k++)
 	{
 		manifold.constraint.holonomic[k] = 
-			atof(fgets(buffer, 50, initFile)); 
+			atof(fgets(buffer, 50, initfile)); 
 	}
 
-	skip_line(initFile); 
+	skip_line(initfile); 
 
 	for (int k = 0; k < manifold.K_S; k++)
 	{
 		manifold.constraint.semiholonomic[k] = 
-			atof(fgets(buffer, 50, initFile)); 
+			atof(fgets(buffer, 50, initfile)); 
 	}
 
-	skip_line(initFile); 
+	skip_line(initfile); 
 
 	for (int k = 0; k < manifold.K_I; k++)
 	{
 		manifold.constraint.inequality[k] = 
-			atof(fgets(buffer, 50, initFile)); 
+			atof(fgets(buffer, 50, initfile)); 
 	}
 
-	fclose(initFile);
+	fclose(initfile);
 
-	perror("\nInitialization"); 
+	perror("\ninitialization"); 
 	print_init_message (simulation, manifold); 	
 
 	return manifold; 

@@ -5,7 +5,7 @@
 #include "write.h"
 #include "dynamics.h"
 
-void usage_message ()
+void usage_message()
 {
 	printf("\nUsage:\n"
 		"./a.out <init> "
@@ -14,9 +14,9 @@ void usage_message ()
 	exit(0); 	
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	if (argc < 2) usage_message (); 
+	if (argc < 2) usage_message(); 
 
 	params simulation; 
 
@@ -50,14 +50,14 @@ int main (int argc, char *argv[])
 
 	/* initialize system manifold */ 
 
-	config manifold = initialize_system_manifold (simulation); 
+	config manifold = initialize_system_manifold(simulation); 
 
 	/* initialize file output */ 
 
-	initialize_output_files (simulation, manifold);
+	initialize_output_files(simulation, manifold);
 
 	/* run simulation */ 
 
-	run_simulation (simulation, manifold); 	
+	run_simulation(simulation, manifold); 	
 }
 

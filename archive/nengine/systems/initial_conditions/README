@@ -1,0 +1,25 @@
+## directory of initial conditions files
+## format:
+
+[number of particles]
+[number of coordinates]
+[mass 1]
+.
+.
+.
+[mass N]
+[initial value of coordinate 0 for particle 0]
+.
+[initial value of coordinate M for particle 0]
+.
+.
+.
+[initial value of coordinate 0 for particle N]
+.
+[initial value of coordinate M for particle N]
+[number of constraints]
+[constraint 0]
+.
+.
+.
+[constraint K]

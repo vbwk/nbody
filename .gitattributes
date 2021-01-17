@@ -1,6 +1,0 @@
-docs/* linguist-vendored
-
-*.html linguist-detectable=false
-*.css linguist-detectable=false
-*.xml linguist-detectable=false
-*.js linguist-detectable=false
